@@ -2,9 +2,12 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import authRoutes from "./routes/auth.routes.js";
+import {auth} from "./middlewares/passport.js";
+import passport from "passport";
 
 const app = express();
 app.use(express.json());
+app.use(passport.initialize());
 
 let corsOptions = {
   origin:[ process.env.ORIGIN_URL , "http://localhost:5500"],

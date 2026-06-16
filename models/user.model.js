@@ -3,8 +3,7 @@ import { sql } from "../configs/db.js";
 
 async function findUserDetails(userEmailID, userMobileNumber) {
   const userDetails =
-      await sql`SELECT email_id, mobile_number FROM users WHERE email_id = ${userEmailID} OR mobile_number = ${userMobileNumber};`;
-    console.log(userDetails);
+      await sql`SELECT uid, email_id, mobile_number, password, account_status FROM users WHERE email_id = ${userEmailID} OR mobile_number = ${userMobileNumber};`;
   return userDetails;
 }
 
