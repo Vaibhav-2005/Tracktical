@@ -10,7 +10,7 @@ async function findUserDetails(userEmailID, userMobileNumber) {
 async function addNewUser(user) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.password, salt);
-    const userDetails = await sql`INSERT INTO users (name, occupation, email_id, password, mobile_number) VALUES (${user.name}, ${user.occupation}, ${user.email_id}, ${hash}, ${user.mobile_number});`;
+    const userDetails = await sql`INSERT INTO users (name, occupation, email_id, password, mobile_number) VALUES (${user.name}, ${user.occupation}, ${user.email_id}, ${hash}, ${user.mobile_number}) RETURNING *;`;
     return userDetails;
 }
 

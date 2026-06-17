@@ -1,4 +1,5 @@
 import { findUserDetails, addNewUser } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 const userSignUp = async (req, res) => {
     const user = req.body;
@@ -18,15 +19,27 @@ const userSignUp = async (req, res) => {
 };
 
 const userLogin = async (req, res) => {
-    const user = req.body;
+    const [user] = req.user;
     try {
-        if(user.account_status === "FALSE"){
-            res.status(202).send("User Authenticated but not Approved by Admin");
+        const payload = {
+            uid: user.uid,
+            username: user.email_id,
+            account_status: user.account_status
+        };
+        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: '6h'});
+        //Checks account_status
+        if(!user.account_status){
+            return res.status(202).json({
+                message:"User Authenticated but not Approved by Admin",
+                token: token
+            });
         }
-        //generation of jwt token
-        //also remember to check if the account is activated or not
-        res.status(200).send("User Login Successful");
+        return res.status(200).send({ 
+            message:"User Login Successful",
+            token: token
+        });
     } catch (e) {
+        console.log(e);
         res.status(500).send("Internal Server Error");
     }
 }
