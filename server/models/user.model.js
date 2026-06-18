@@ -14,4 +14,10 @@ async function addNewUser(user) {
     return userDetails;
 }
 
-export { findUserDetails, addNewUser};
+async function updateProfile(updatedDetails, userUID) {
+    const response =
+      await sql`UPDATE users SET name = ${updatedDetails.name}, occupation = ${updatedDetails.occupation} WHERE uid = ${userUID} RETURNING uid, name, occupation, email_id, account_status;`;
+    return response;
+}
+
+export { findUserDetails, addNewUser, updateProfile };

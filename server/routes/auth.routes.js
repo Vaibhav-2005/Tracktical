@@ -8,7 +8,7 @@ const authRoutes = express.Router();
 
 authRoutes.route("/signup").post(userSignUp);
 authRoutes.route("/login").post(loginVerification, userLogin);
-authRoutes.route("/logout").get(userLogout);
+authRoutes.route("/logout").get(isAuthenticated, userLogout);
 authRoutes.route("/profile/update").post(isAuthenticated, userProfileUpdate);
 authRoutes.route("/approveUserAccount").post(isAuthenticated, isSuperAdminAuthenticated, approveUserEmailID);
 authRoutes.route("/referallCodeAccountActivation").post(referralCodeVerification, isAuthenticated, approveUserEmailID);

@@ -7,7 +7,7 @@ const isAuthenticated = (req, res, next) => {
         const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET_KEY);
         if(decoded) {
             res.user = decoded;
-            if(decoded.account_status) next();
+            if (decoded.account_status || req.path === "/referallCodeAccountActivation") next();
             else return res.status(202).json({message:"User Authenticated but not Approved by Admin"});
         }
         else return res.status(401).send({error:"Unauthorized"});

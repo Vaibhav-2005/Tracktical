@@ -1,4 +1,4 @@
-import { findUserDetails, addNewUser } from "../models/user.model.js";
+import { findUserDetails, addNewUser, updateProfile } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 const userSignUp = async (req, res) => {
@@ -31,12 +31,14 @@ const userLogin = async (req, res) => {
         if(!user.account_status){
             return res.status(202).json({
                 message:"User Authenticated but not Approved by Admin",
-                token: token
+                token: token,
+                success: false
             });
         }
         return res.status(200).send({ 
             message:"User Login Successful",
-            token: token
+            token: token,
+            success: true
         });
     } catch (e) {
         console.log(e);
@@ -46,12 +48,22 @@ const userLogin = async (req, res) => {
 
 
 const userProfileUpdate = async (req, res) => {
-  res.status(404).send("Not Created Yet");
+    const updatedDetails = req.body;
+    if (!updatedDetails) return res.status(404).send("No Updated Data Found");
+    else if (!res.user.uid) return res.statuus(401).send("No Authorized User Found");
+    try {
+        const updatedProfile = await updateProfile(updatedDetails, res.user.uid);
+        if (!updatedProfile) return res.status(500).send({ message: "Internal Server Error" });
+        else return res.status(200).send("Profile Updated Successfully");
+    } catch (err) {
+        return res.status(500).send("Internal Server Error");
+    }
 };
 
 
 const userLogout = async (req, res) => {
-  res.status(404).send("Not Created Yet");
+    res.clearCookie('token');
+    res.status(200).send({ message: "Logged Out Successfully" });
 };
 
 
