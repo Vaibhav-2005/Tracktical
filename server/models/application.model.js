@@ -6,4 +6,13 @@ async function insertNewApplicationDetails(applicationDetails, uid) {
     return response;
 }
 
-export { insertNewApplicationDetails };
+async function getAllApplicationsForUserId(user){
+    const response = await sql`SELECT * FROM applications WHERE uid = ${user};`;
+    return response;
+}
+
+async function getApplicationById(user){
+    return {message: "Not Completed yet as it needs to show application stages too."};
+}
+
+export { insertNewApplicationDetails, getAllApplicationsForUserId, getApplicationById };

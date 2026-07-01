@@ -1,4 +1,4 @@
-import { insertNewApplicationDetails } from "../models/application.model.js";
+import { insertNewApplicationDetails, getAllApplicationsForUserId, getApplicationById } from "../models/application.model.js";
 
 const createNewApplication = async (req, res) => {
     const applicationDetails = req.body;
@@ -23,7 +23,18 @@ const createNewApplication = async (req, res) => {
 };
 
 const getAllApplicationsForSpecificUser = async (req, res) => {
-    return res.status(500).send("Not Created yet");
+  const user = res.user.uid;
+  try{
+    const response = await getAllApplicationsForUserId(user);
+    return res.status(200).send({
+      message: "All Applications Fetched!",
+      response: response,
+      success: true
+    });
+  }
+  catch(err){
+    return res.status(500).send("Internal Server Error!");
+  }
 }
 
 const updateApplicationDetailsById = async (req, res) => {
@@ -39,7 +50,22 @@ const deleteApplicationDetails = async (req, res) => {
 };
 
 const getApplicationByApplicationId = async (req, res) => {
-  return res.status(500).send("Not Created yet");
+  const { application_id }= req.body;
+  const uid = res.user.uid;
+  if(!application_id) return res.status(404).send("Application Not Found!");
+  try{
+    const response = await getApplicationById(application_id, uid);
+    console.log(response);
+    if(!response){
+      return res.status(404).send("No Response Detected");
+    }
+    //remember to add check if the uid matches the one we got from the uid recieved from response.
+    return res.status(200).send(response);
+  }
+  catch(err){
+    console.log(err);
+    return res.status(500).send("Internal Server Error");
+  }
 };
 
 export {
