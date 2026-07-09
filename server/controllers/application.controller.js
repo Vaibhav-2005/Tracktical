@@ -44,7 +44,8 @@ const getAllApplicationsForSpecificUser = async (req, res) => {
 }
 
 const updateApplicationDetailsById = async (req, res) => {
-  return res.status(500).send("Not Created yet");
+  const applicationDetails = req.body;
+  const uid = res.user.uid;
 };
 
 const clearCurrentStage = async (req, res) => {
@@ -52,6 +53,10 @@ const clearCurrentStage = async (req, res) => {
 };
 
 const deleteApplicationDetails = async (req, res) => {
+  return res.status(500).send("Not Created yet");
+};
+
+const getApplicationStagesByApplicationId = async (req, res) => {
   return res.status(500).send("Not Created yet");
 };
 
@@ -81,4 +86,5 @@ export {
   deleteApplicationDetails,
   clearCurrentStage,
   updateApplicationDetailsById,
+  getApplicationStagesByApplicationId,
 };
