@@ -1,4 +1,8 @@
-import { insertNewApplicationDetails } from "../models/application.model.js";
+import {
+  insertNewApplicationDetails,
+  getAllApplicationsOnUserId,
+  getApplicationById,
+} from "../models/application.model.js";
 
 const createNewApplication = async (req, res) => {
     const applicationDetails = req.body;
@@ -23,7 +27,19 @@ const createNewApplication = async (req, res) => {
 };
 
 const getAllApplicationsForSpecificUser = async (req, res) => {
-    return res.status(500).send("Not Created yet");
+  const uid = res.user.uid;
+  try {
+    const applications = await getAllApplicationsOnUserId(uid);
+    if (applications.length === 0) return res.status(404).send("No applications found for this user");
+    return res.status(200).send({
+      message: "Applications Fetched Successfully",
+      applications: applications
+    });
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal Server Error");    
+  }
 }
 
 const updateApplicationDetailsById = async (req, res) => {
@@ -39,7 +55,21 @@ const deleteApplicationDetails = async (req, res) => {
 };
 
 const getApplicationByApplicationId = async (req, res) => {
-  return res.status(500).send("Not Created yet");
+  const { application_id } = req.body;
+  if (!application_id) return res.status(404).send("Application Id Not Found");
+  const uid = res.user.uid;
+  try {
+    const [application] = await getApplicationById(uid, application_id);
+    if (!application) return res.status(404).send("Application Not Found!");
+    return res.status(200).send({
+      message: "Application Fetched as per ID",
+      application: application
+    });
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(200).send("Internal Server Error!");
+  }
 };
 
 export {

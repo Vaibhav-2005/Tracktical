@@ -6,4 +6,18 @@ async function insertNewApplicationDetails(applicationDetails, uid) {
     return response;
 }
 
-export { insertNewApplicationDetails };
+async function getAllApplicationsOnUserId(uid) {
+    const response = await sql`SELECT * FROM applications WHERE uid = ${uid};`;
+    return response;
+}
+
+async function getApplicationById(uid, application_id) {
+    const response = await sql`SELECT * FROM applications WHERE application_id = ${application_id} AND uid = ${uid};`;
+    return response;
+}
+
+export {
+  insertNewApplicationDetails,
+  getAllApplicationsOnUserId,
+  getApplicationById,
+};
