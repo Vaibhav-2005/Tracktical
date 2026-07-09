@@ -33,7 +33,8 @@ const getAllApplicationsForSpecificUser = async (req, res) => {
     if (applications.length === 0) return res.status(404).send("No applications found for this user");
     return res.status(200).send({
       message: "Applications Fetched Successfully",
-      applications: applications
+      applications: applications,
+      success: true
     });
   }
   catch (err) {
@@ -63,7 +64,8 @@ const getApplicationByApplicationId = async (req, res) => {
     if (!application) return res.status(404).send("Application Not Found!");
     return res.status(200).send({
       message: "Application Fetched as per ID",
-      application: application
+      application: application,
+      success: true
     });
   }
   catch (err) {
