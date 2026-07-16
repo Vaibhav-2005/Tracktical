@@ -2,6 +2,8 @@ import {
   insertNewApplicationDetails,
   getAllApplicationsOnUserId,
   getApplicationById,
+  updateApplicationDetails,
+  clearCurrentRound
 } from "../models/application.model.js";
 
 const createNewApplication = async (req, res) => {
@@ -30,7 +32,7 @@ const getAllApplicationsForSpecificUser = async (req, res) => {
   const uid = res.user.uid;
   try {
     const applications = await getAllApplicationsOnUserId(uid);
-    if (applications.length === 0) return res.status(404).send("No applications found for this user");
+    if (applications.length === 0) return res.status(404).send({ message: "No applications found for this user" });
     return res.status(200).send({
       message: "Applications Fetched Successfully",
       applications: applications,
@@ -39,17 +41,30 @@ const getAllApplicationsForSpecificUser = async (req, res) => {
   }
   catch (err) {
     console.log(err);
-    return res.status(500).send("Internal Server Error");    
+    return res.status(500).send("Internal Server Error");
   }
 }
 
 const updateApplicationDetailsById = async (req, res) => {
-  const applicationDetails = req.body;
+  const allApplicationDetails = req.body;
   const uid = res.user.uid;
+  if (!allApplicationDetails) return res.status(404).send("Application Details Not Found!");
+  // comparing with 1 as appliction_id will come till this point else it would have been caught in the above line
+  if (Object.keys(allApplicationDetails).length === 1) return res.status(404).send("No Data Found to update");
+  const { application_id, ...applicationDetails } = allApplicationDetails;
+  try {
+    const updatedDetails = await updateApplicationDetails(applicationDetails, application_id, uid);
+    if (updatedDetails.length === 0) return res.status(401).send("Could Not Update Details for Given Application");
+    return res.status(200).send("Application Updated Successfully");
+  }
+  catch (error) {
+    console.log(error);
+    return res.status(500).send("Internal Server Error!");
+  }
 };
 
 const clearCurrentStage = async (req, res) => {
-  return res.status(500).send("Not Created yet");
+  return res.status(500).send("Not Created Yet");
 };
 
 const deleteApplicationDetails = async (req, res) => {
@@ -62,7 +77,7 @@ const getApplicationStagesByApplicationId = async (req, res) => {
 
 const getApplicationByApplicationId = async (req, res) => {
   const { application_id } = req.body;
-  if (!application_id) return res.status(404).send("Application Id Not Found");
+  if (!application_id) return res.status(404).send("Application Id Not Found!");
   const uid = res.user.uid;
   try {
     const [application] = await getApplicationById(uid, application_id);

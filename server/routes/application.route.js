@@ -1,4 +1,4 @@
-import express, { application } from "express";
+import express from "express";
 import {
   createNewApplication,
   getAllApplicationsForSpecificUser,
@@ -14,7 +14,6 @@ const applicationRoutes = express.Router();
 applicationRoutes.route('/newApplication').post(createNewApplication);
 applicationRoutes.route('/getAllApplications').get(getAllApplicationsForSpecificUser);
 applicationRoutes.route('/getApplicationWithApplicationId').get(getApplicationByApplicationId);
-applicationRoutes.route('/getApplicationStagesById').get(getApplicationStagesByApplicationId);
 applicationRoutes.route('/updateApplicationDetails').post(updateApplicationDetailsById);
 applicationRoutes.route('/deleteApplication').post(deleteApplicationDetails);
 applicationRoutes.route('/clearedCurrentStage').post(clearCurrentStage);
