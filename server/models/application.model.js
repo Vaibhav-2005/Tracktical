@@ -38,10 +38,16 @@ async function clearCurrentRound(application_id, uid) {
     return null;
 }
 
+async function hideApplication(application_id, uid){
+    const response = await sql`UPDATE applications SET visibility = false WHERE application_id = ${application_id} AND uid = ${uid} RETURNING *;`;
+    return response;
+}
+
 export {
   insertNewApplicationDetails,
   getAllApplicationsOnUserId,
   getApplicationById,
   updateApplicationDetails,
   clearCurrentRound,
+  hideApplication
 };

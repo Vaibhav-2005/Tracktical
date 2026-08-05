@@ -3,7 +3,8 @@ import {
   getAllApplicationsOnUserId,
   getApplicationById,
   updateApplicationDetails,
-  clearCurrentRound
+  clearCurrentRound,
+  hideApplication
 } from "../models/application.model.js";
 
 const createNewApplication = async (req, res) => {
@@ -67,12 +68,24 @@ const clearCurrentStage = async (req, res) => {
   return res.status(500).send("Not Created Yet");
 };
 
-const deleteApplicationDetails = async (req, res) => {
-  return res.status(500).send("Not Created yet");
-};
-
-const getApplicationStagesByApplicationId = async (req, res) => {
-  return res.status(500).send("Not Created yet");
+const hideApplicationDetails = async (req, res) => {
+  if(!req.body) return res.status(422).send("Application Details Not Found!");
+  const applicationId = req.body.application_id;
+  const uid = res.user.uid;
+  console.log(applicationId);
+  if(!applicationId) return res.status(404).send("Application Id Not Found!");
+  try{
+    const response = await hideApplication(applicationId, uid);
+    if(response.length === 0) return res.status(404).send("Application Not Found");
+    return res.status(200).send({
+      message: "Application has been hidden from sight.",
+      success: true
+    })
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal Server Error!");
+  }
 };
 
 const getApplicationByApplicationId = async (req, res) => {
@@ -90,7 +103,7 @@ const getApplicationByApplicationId = async (req, res) => {
   }
   catch (err) {
     console.log(err);
-    return res.status(200).send("Internal Server Error!");
+    return res.status(500).send("Internal Server Error!");
   }
 };
 
@@ -98,8 +111,7 @@ export {
   createNewApplication,
   getAllApplicationsForSpecificUser,
   getApplicationByApplicationId,
-  deleteApplicationDetails,
+  hideApplicationDetails,
   clearCurrentStage,
   updateApplicationDetailsById,
-  getApplicationStagesByApplicationId,
 };
